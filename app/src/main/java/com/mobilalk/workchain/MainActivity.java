@@ -26,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void openRegister(View view) {
         Intent intent = new Intent(this, Register.class);
-        intent.putExtra("SECRET_KEY", SecretKeys.REGISTER_SECRET_KEY);
+        startActivity(intent);
+    }
+
+    public void openLogin(View view) {
+        Intent intent = new Intent(this, Login.class);
         startActivity(intent);
     }
 }

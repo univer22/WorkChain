@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background" >
+    android:background="@color/background">
 
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".Register">
+        tools:context=".Login">
+
 
         <TextView
             android:id="@+id/editTextText"
@@ -19,13 +20,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="monospace"
-            android:text="@string/signUp"
+            android:text="@string/login"
             android:textAlignment="center"
             android:textSize="34sp"
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/emailAddress"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="10dp"
@@ -39,21 +40,7 @@
             android:paddingStart="10dp" />
 
         <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="10dp"
-            android:autofillHints="name"
-            android:ems="10"
-            android:hint="@string/name"
-            android:inputType="text"
-            android:background="@drawable/edittext"
-            android:paddingStart="10dp" />
-
-        <EditText
-            android:id="@+id/password"
+            android:id="@+id/psw"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="10dp"
@@ -64,33 +51,19 @@
             android:importantForAutofill="no"
             android:inputType="textPassword"
             android:background="@drawable/edittext"
-            android:paddingStart="10dp" />
-
-        <EditText
-            android:id="@+id/passwordCheck"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="10dp"
-            android:ems="10"
-            android:hint="@string/rePassword"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:background="@drawable/edittext"
-            android:paddingStart="10dp" />
+            android:paddingStart="10dp"/>
 
         <Button
-            android:id="@+id/register"
+            android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:backgroundTint="@color/blue"
-            android:onClick="register"
-            android:text="@string/signUp"
+            android:onClick="login"
+            android:text="@string/login"
             android:textSize="24sp"
-            app:icon="@drawable/register" />
+            app:icon="@drawable/login" />
 
         <Button
             android:id="@+id/back"

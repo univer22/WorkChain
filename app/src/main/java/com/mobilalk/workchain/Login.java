@@ -1,5 +1,6 @@
 package com.mobilalk.workchain;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -20,11 +21,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Register extends AppCompatActivity {
+public class Login extends AppCompatActivity {
+
     private EditText emailEditText;
-    private EditText nameEditText;
     private EditText passwordEditText;
-    private EditText passwordCheckEditText;
     private FirebaseAuth auth;
     private SharedPreferences sharedPreferences;
 
@@ -32,22 +32,10 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_register);
-        setEditTexts();
+        setContentView(R.layout.activity_login);
+       setEditTexts();
         auth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
-        String savedEmail = sharedPreferences.getString("email", "");
-        String savedPassword = sharedPreferences.getString("password", "");
-
-        if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
-            emailEditText.setText(savedEmail);
-            passwordEditText.setText(savedPassword);
-        }
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -59,41 +47,34 @@ public class Register extends AppCompatActivity {
         finish();
     }
 
-    public void register(View view) {
+    public void login(View view) {
         String email = emailEditText.getText().toString().trim();
-        String name = nameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
-        String passwordCheck = passwordCheckEditText.getText().toString().trim();
 
-        if (email.isEmpty() || name.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!password.equals(passwordCheck)) {
-            Toast.makeText(this, "A két jelszó nem egyezik!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.length() < 6) {
-            Toast.makeText(this, "A jelszónak legalább 6 karakternek kell lennie.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(Register.this, "Sikeres regisztráció!", Toast.LENGTH_SHORT).show();
-
-                    //TODO: move next acitivy
+                    //TODO: move next page
                 } else {
-                    Toast.makeText(Register.this, "Sikertelen regisztráció!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Sikertelen bejelenetkezés!", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("email", email);
+                    editor.putString("password", password);
+                    editor.apply();
+                    Intent intent = new Intent(Login.this, Register.class);
+                    startActivity(intent);
                 }
             }
         });
-
     }
 
     private void setEditTexts() {
-        emailEditText = findViewById(R.id.emailAddress);
+        emailEditText = findViewById(R.id.email);
         emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
@@ -110,24 +91,7 @@ public class Register extends AppCompatActivity {
                 }
             }
         });
-        nameEditText = findViewById(R.id.name);
-        nameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
-                    nameEditText.setBackgroundResource(R.drawable.editttext_filled);
-                } else {
-                    nameEditText.setBackgroundResource(R.drawable.edittext);
-                }
-            }
-        });
-        passwordEditText = findViewById(R.id.password);
+        passwordEditText = findViewById(R.id.psw);
         passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
@@ -141,23 +105,6 @@ public class Register extends AppCompatActivity {
                     passwordEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     passwordEditText.setBackgroundResource(R.drawable.edittext);
-                }
-            }
-        });
-        passwordCheckEditText = findViewById(R.id.passwordCheck);
-        passwordCheckEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
-                    passwordCheckEditText.setBackgroundResource(R.drawable.editttext_filled);
-                } else {
-                    passwordCheckEditText.setBackgroundResource(R.drawable.edittext);
                 }
             }
         });

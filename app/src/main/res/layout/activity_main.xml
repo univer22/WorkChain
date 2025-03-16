@@ -29,6 +29,7 @@
         android:backgroundTint="@color/blue"
         android:text="@string/login"
         android:textSize="24sp"
+        android:onClick="openLogin"
         app:icon="@drawable/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
