@@ -3,4 +3,10 @@
     <string name="login">Bejelentkezés</string>
     <string name="signUp">Regisztráció</string>
     <string name="workchain">WorkChain</string>
+    <string name="emailAddress">Email cím</string>
+    <string name="name">Név</string>
+    <string name="password">Jelszó</string>
+    <string name="rePassword">Jelszó újra</string>
+    <string name="back">Vissza</string>
+    <string name="logo">logo</string>
 </resources>
