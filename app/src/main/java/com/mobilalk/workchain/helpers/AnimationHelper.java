@@ -1,9 +1,11 @@
-package com.mobilalk.workchain;
+package com.mobilalk.workchain.helpers;
 
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+
+import com.mobilalk.workchain.R;
 
 public class AnimationHelper {
     public static void delayAnimation(final View view, int delay, Context context) {

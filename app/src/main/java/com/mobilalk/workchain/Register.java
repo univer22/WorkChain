@@ -25,6 +25,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.mobilalk.workchain.helpers.AnimationHelper;
 
 public class Register extends AppCompatActivity {
     private EditText emailEditText;

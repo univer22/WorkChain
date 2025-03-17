@@ -92,7 +92,6 @@ public class Project extends AppCompatActivity {
         textView.setPadding(16, 16, 16, 16);
 
         cardView.addView(textView);
-
         mainLayout.addView(cardView);
     }
 }

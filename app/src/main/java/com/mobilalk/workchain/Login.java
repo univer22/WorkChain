@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.mobilalk.workchain.helpers.AnimationHelper;
 
 public class Login extends AppCompatActivity {
 
@@ -132,7 +133,5 @@ public class Login extends AppCompatActivity {
         AnimationHelper.delayAnimation(passwordEditText, 250, this);
         AnimationHelper.delayAnimation(login, 500, this);
         AnimationHelper.delayAnimation(back, 750, this);
-
     }
-
 }
