@@ -67,7 +67,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    //TODO: move next page
+                    startActivity(new Intent(Login.this, Project.class));
                 } else {
                     Toast.makeText(Login.this, "Sikertelen bejelenetkezés!", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = sharedPreferences.edit();

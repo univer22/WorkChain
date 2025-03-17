@@ -1,5 +1,6 @@
 package com.mobilalk.workchain;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -90,8 +91,7 @@ public class Register extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(Register.this, "Sikeres regisztráció!", Toast.LENGTH_SHORT).show();
-
-                    //TODO: move next acitivy
+                    startActivity(new Intent(Register.this, Project.class));
                 } else {
                     Toast.makeText(Register.this, "Sikertelen regisztráció!", Toast.LENGTH_SHORT).show();
                 }

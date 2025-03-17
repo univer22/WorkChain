@@ -9,4 +9,8 @@
     <string name="rePassword">Jelszó újra</string>
     <string name="back">Vissza</string>
     <string name="logo">logo</string>
+    <string name="newProject">Új projekt létrehozása</string>
+    <string name="projects">Projektek</string>
+    <string name="profile">Profilom</string>
+    <string name="logout">Kijelentkezés</string>
 </resources>
