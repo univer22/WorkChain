@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ public class Register extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
         setEditTexts();
+        setAnimations();
         auth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
         String savedEmail = sharedPreferences.getString("email", "");
@@ -67,6 +71,10 @@ public class Register extends AppCompatActivity {
 
         if (email.isEmpty() || name.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()) {
             Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!email.contains("@")) {
+            Toast.makeText(this, "Nem email formátum!", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!password.equals(passwordCheck)) {
@@ -103,7 +111,8 @@ public class Register extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
+                String inputText = editable.toString();
+                if (inputText.contains("@")) {
                     emailEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     emailEditText.setBackgroundResource(R.drawable.edittext);
@@ -137,7 +146,7 @@ public class Register extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
+                if (editable.length() > 5) {
                     passwordEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     passwordEditText.setBackgroundResource(R.drawable.edittext);
@@ -154,12 +163,33 @@ public class Register extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
+                String password = passwordEditText.getText().toString();
+                if (editable.toString().equals(password)) {
                     passwordCheckEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     passwordCheckEditText.setBackgroundResource(R.drawable.edittext);
                 }
             }
         });
+    }
+
+    private void setAnimations() {
+        emailEditText.setVisibility(View.INVISIBLE);
+        nameEditText.setVisibility(View.INVISIBLE);
+        passwordEditText.setVisibility(View.INVISIBLE);
+        passwordCheckEditText.setVisibility(View.INVISIBLE);
+        Button register = findViewById(R.id.register);
+        register.setVisibility(View.INVISIBLE);
+        Button back = findViewById(R.id.back);
+        back.setVisibility(View.INVISIBLE);
+
+        Animation slideInLeft = AnimationUtils.loadAnimation(this, R.anim.input_animation);
+        emailEditText.setVisibility(View.VISIBLE);
+        emailEditText.startAnimation(slideInLeft);
+        AnimationHelper.delayAnimation(nameEditText, 250, this);
+        AnimationHelper.delayAnimation(passwordEditText, 500, this);
+        AnimationHelper.delayAnimation(passwordCheckEditText, 750, this);
+        AnimationHelper.delayAnimation(register, 1000, this);
+        AnimationHelper.delayAnimation(back, 1250, this);
     }
 }
