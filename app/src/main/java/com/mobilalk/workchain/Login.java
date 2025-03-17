@@ -59,8 +59,8 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!email.contains("@")) {
-            Toast.makeText(this, "Nem email formátum!", Toast.LENGTH_SHORT).show();
+        if (!email.contains("@") || !email.contains(".")) {
+            Toast.makeText(this, "Az emailnek tartalmaznia kell: @ . karaktereket.", Toast.LENGTH_SHORT).show();
             return;
         }
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -74,8 +74,7 @@ public class Login extends AppCompatActivity {
                     editor.putString("email", email);
                     editor.putString("password", password);
                     editor.apply();
-                    Intent intent = new Intent(Login.this, Register.class);
-                    startActivity(intent);
+                    startActivity(new Intent(Login.this, Register.class));
                 }
             }
         });
@@ -93,7 +92,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputText = editable.toString();
-                if (inputText.contains("@")) {
+                if (inputText.contains("@") && inputText.contains(".")) {
                     emailEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     emailEditText.setBackgroundResource(R.drawable.edittext);

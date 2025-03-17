@@ -23,6 +23,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class Register extends AppCompatActivity {
     private EditText emailEditText;
@@ -74,8 +76,8 @@ public class Register extends AppCompatActivity {
             Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!email.contains("@")) {
-            Toast.makeText(this, "Nem email formátum!", Toast.LENGTH_SHORT).show();
+        if (!email.contains("@") || !email.contains(".")) {
+            Toast.makeText(this, "Az emailnek tartalmaznia kell: @ . karaktereket.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!password.equals(passwordCheck)) {
@@ -93,11 +95,17 @@ public class Register extends AppCompatActivity {
                     Toast.makeText(Register.this, "Sikeres regisztráció!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Register.this, Project.class));
                 } else {
-                    Toast.makeText(Register.this, "Sikertelen regisztráció!", Toast.LENGTH_SHORT).show();
+                    Exception exception = task.getException();
+                    if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(Register.this, "Hibás email cím formátum!", Toast.LENGTH_SHORT).show();
+                    } else if (exception instanceof FirebaseAuthUserCollisionException) {
+                        Toast.makeText(Register.this, "Ez az email cím már regisztrálva van.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Register.this, "Sikertelen regisztráció!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
-
     }
 
     private void setEditTexts() {
@@ -112,7 +120,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputText = editable.toString();
-                if (inputText.contains("@")) {
+                if (inputText.contains("@") && inputText.contains(".")) {
                     emailEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     emailEditText.setBackgroundResource(R.drawable.edittext);
