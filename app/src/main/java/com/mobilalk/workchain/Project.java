@@ -3,14 +3,12 @@ package com.mobilalk.workchain;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -20,8 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.mobilalk.workchain.helpers.MenuHelper;
 
-import java.util.Objects;
 
 public class Project extends AppCompatActivity {
 
@@ -37,9 +35,7 @@ public class Project extends AppCompatActivity {
         if (user == null) {
             finish();
         }
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        MenuHelper.setToolbar(this);
 
         mainLayout = findViewById(R.id.main);
         addCard("Létrehozott projektek listázása: fejlesztés alatt");
@@ -51,25 +47,17 @@ public class Project extends AppCompatActivity {
         });
     }
     public void newProject(View view) {
+        startActivity(new Intent(this, AddProject.class));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
+        return MenuHelper.onCreateOptionsMenu(menu, getMenuInflater());
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.logout) {
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText(this, "Sikeres kijelentkezés", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
-            return true;
-        }
-        return false;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return MenuHelper.onOptionsItemSelected(item, this);
     }
 
     private void addCard(String text) {

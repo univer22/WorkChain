@@ -37,7 +37,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-       setEditTexts();
+        setEditTexts();
         setAnimations();
         auth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);

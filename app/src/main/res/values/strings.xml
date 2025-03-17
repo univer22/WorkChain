@@ -13,4 +13,8 @@
     <string name="projects">Projektek</string>
     <string name="profile">Profilom</string>
     <string name="logout">Kijelentkezés</string>
+    <string name="projectName">Projekt neve</string>
+    <string name="description">Leírás</string>
+    <string name="create">Létrehozás</string>
+    <string name="home">Kezdőoldal</string>
 </resources>
