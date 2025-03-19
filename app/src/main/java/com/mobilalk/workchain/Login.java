@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mobilalk.workchain.helpers.AnimationHelper;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 
 public class Login extends AppCompatActivity {
 
@@ -53,6 +54,11 @@ public class Login extends AppCompatActivity {
     }
 
     public void login(View view) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 

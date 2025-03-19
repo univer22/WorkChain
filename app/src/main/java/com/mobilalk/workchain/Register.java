@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.mobilalk.workchain.helpers.AnimationHelper;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 
 public class Register extends AppCompatActivity {
     private EditText emailEditText;
@@ -68,6 +69,11 @@ public class Register extends AppCompatActivity {
     }
 
     public void register(View view) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         String email = emailEditText.getText().toString().trim();
         String name = nameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();

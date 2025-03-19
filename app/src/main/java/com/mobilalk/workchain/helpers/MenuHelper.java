@@ -36,10 +36,12 @@ public class MenuHelper {
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(context, "Sikeres kijelentkezés", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, MainActivity.class));
+            ((AppCompatActivity)context).finish();
             return true;
         }
         else if (itemId == R.id.home) {
             context.startActivity(new Intent(context, Project.class));
+            ((AppCompatActivity)context).finish();
             return true;
         }
         return false;
