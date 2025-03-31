@@ -189,7 +189,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 String password = passwordEditText.getText().toString();
-                if (editable.toString().equals(password)) {
+                if (!editable.toString().isEmpty() && editable.toString().equals(password)) {
                     passwordCheckEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     passwordCheckEditText.setBackgroundResource(R.drawable.edittext);
