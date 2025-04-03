@@ -1,7 +1,6 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,13 +24,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.NetworkHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 
 public class Login extends AppCompatActivity {
 
     private EditText emailEditText;
     private EditText passwordEditText;
     private FirebaseAuth auth;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferencesHelper sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setEditTexts();
         auth = FirebaseAuth.getInstance();
-        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        sharedPreferences = new SharedPreferencesHelper(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -82,10 +82,8 @@ public class Login extends AppCompatActivity {
                     startActivity(new Intent(Login.this, ProjectActivity.class));
                 } else {
                     Toast.makeText(Login.this, "Sikertelen bejelenetkezés!", Toast.LENGTH_SHORT).show();
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("email", email);
-                    editor.putString("password", password);
-                    editor.apply();
+                    sharedPreferences.addItem("email", email);
+                    sharedPreferences.addItem("password", password);
                     startActivity(new Intent(Login.this, Register.class));
                 }
             }

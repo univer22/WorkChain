@@ -1,7 +1,6 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,13 +16,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
 
 
@@ -33,7 +31,7 @@ public class ProjectActivity extends AppCompatActivity {
     private LinearLayout mainLayout;
     private FirebaseFirestore firestore;
     private CollectionReference projects;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferencesHelper sharedPreferences;
 
 
     @Override
@@ -48,7 +46,7 @@ public class ProjectActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         projects = firestore.collection("projects");
         listProjects();
-        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        sharedPreferences = new SharedPreferencesHelper(this);
         mainLayout = findViewById(R.id.main);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -60,14 +58,12 @@ public class ProjectActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        String newProjectId = sharedPreferences.getString("newProjectId", "");
+        String newProjectId = sharedPreferences.getItem("newProjectId", "");
         if (!newProjectId.isEmpty()) {
             projects.document(newProjectId).get().addOnSuccessListener(documentSnapshot -> {
                 Project project = documentSnapshot.toObject(Project.class);
                 addCard(project.getName() + " " + project.getDescription());
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("newProjectId");
-                editor.apply();
+                sharedPreferences.deleteItem("newProjectId");
             });
         }
         super.onResume();

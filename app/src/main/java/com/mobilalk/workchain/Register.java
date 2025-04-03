@@ -1,7 +1,6 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +28,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.NetworkHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.User;
 
 public class Register extends AppCompatActivity {
@@ -37,7 +37,7 @@ public class Register extends AppCompatActivity {
     private EditText passwordEditText;
     private EditText passwordCheckEditText;
     private FirebaseAuth auth;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferencesHelper sharedPreferences;
     private FirebaseFirestore firestore;
     private CollectionReference users;
     @Override
@@ -47,7 +47,7 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         setEditTexts();
         auth = FirebaseAuth.getInstance();
-        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        sharedPreferences = new SharedPreferencesHelper(this);
         firestore = FirebaseFirestore.getInstance();
         users = firestore.collection("users");
 
@@ -66,17 +66,15 @@ public class Register extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        String savedEmail = sharedPreferences.getString("email", "");
-        String savedPassword = sharedPreferences.getString("password", "");
+        String savedEmail = sharedPreferences.getItem("email", "");
+        String savedPassword = sharedPreferences.getItem("password", "");
 
         if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
             emailEditText.setText(savedEmail);
             passwordEditText.setText(savedPassword);
         }
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+       sharedPreferences.clear();
         super.onResume();
     }
 

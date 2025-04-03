@@ -1,6 +1,5 @@
 package com.mobilalk.workchain;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
 
 public class AddProject extends AppCompatActivity {
@@ -29,7 +29,7 @@ public class AddProject extends AppCompatActivity {
     private EditText descriptionEdittext;
     private FirebaseFirestore firestore;
     private CollectionReference projects;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferencesHelper sharedPreferences;
 
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -47,7 +47,7 @@ public class AddProject extends AppCompatActivity {
         setEditTexts();
         firestore = FirebaseFirestore.getInstance();
         projects = firestore.collection("projects");
-        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        sharedPreferences = new SharedPreferencesHelper(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -73,9 +73,7 @@ public class AddProject extends AppCompatActivity {
             return;
         }
         projects.add(new Project(name, description, auth.getUid())).addOnSuccessListener(documentReference -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("newProjectId", documentReference.getId());
-            editor.apply();
+            sharedPreferences.addItem("newProjectId", documentReference.getId());
             finish();
         });
     }
