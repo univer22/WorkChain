@@ -25,8 +25,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.NetworkHelper;
+import com.mobilalk.workchain.models.User;
 
 public class Register extends AppCompatActivity {
     private EditText emailEditText;
@@ -35,7 +38,8 @@ public class Register extends AppCompatActivity {
     private EditText passwordCheckEditText;
     private FirebaseAuth auth;
     private SharedPreferences sharedPreferences;
-
+    private FirebaseFirestore firestore;
+    private CollectionReference users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,8 @@ public class Register extends AppCompatActivity {
         setEditTexts();
         auth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        firestore = FirebaseFirestore.getInstance();
+        users = firestore.collection("users");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -109,8 +115,9 @@ public class Register extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    users.add(new User(email, name));
                     Toast.makeText(Register.this, "Sikeres regisztráció!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Register.this, Project.class));
+                    startActivity(new Intent(Register.this, ProjectActivity.class));
                 } else {
                     Exception exception = task.getException();
                     if (exception instanceof FirebaseAuthInvalidCredentialsException) {

@@ -16,7 +16,7 @@
             android:name=".AddProject"
             android:exported="false" />
         <activity
-            android:name=".Project"
+            android:name=".ProjectActivity"
             android:exported="false" />
         <activity
             android:name=".Login"

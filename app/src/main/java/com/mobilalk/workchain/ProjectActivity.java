@@ -1,6 +1,7 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,29 +17,39 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.models.Project;
 
 
-public class Project extends AppCompatActivity {
+public class ProjectActivity extends AppCompatActivity {
 
-    private FirebaseUser user;
+    private FirebaseAuth auth = FirebaseAuth.getInstance();
     private LinearLayout mainLayout;
+    private FirebaseFirestore firestore;
+    private CollectionReference projects;
+    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_project);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        if (auth.getCurrentUser() == null) {
             finish();
         }
         MenuHelper.setToolbar(this);
-
+        firestore = FirebaseFirestore.getInstance();
+        projects = firestore.collection("projects");
+        listProjects();
+        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
         mainLayout = findViewById(R.id.main);
-        addCard("Létrehozott projektek listázása: fejlesztés alatt");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -46,6 +57,32 @@ public class Project extends AppCompatActivity {
             return insets;
         });
     }
+
+    @Override
+    protected void onResume() {
+        String newProjectId = sharedPreferences.getString("newProjectId", "");
+        if (!newProjectId.isEmpty()) {
+            projects.document(newProjectId).get().addOnSuccessListener(documentSnapshot -> {
+                Project project = documentSnapshot.toObject(Project.class);
+                addCard(project.getName() + " " + project.getDescription());
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove("newProjectId");
+                editor.apply();
+            });
+        }
+        super.onResume();
+
+    }
+
+    private void listProjects() {
+        projects.whereEqualTo("userID", auth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
+           for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+               Project project = document.toObject(Project.class);
+               addCard(project.getName() + " " + project.getDescription());
+           }
+        });
+    }
+
     public void newProject(View view) {
         startActivity(new Intent(this, AddProject.class));
     }

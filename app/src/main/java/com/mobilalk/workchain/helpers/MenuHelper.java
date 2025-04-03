@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mobilalk.workchain.MainActivity;
-import com.mobilalk.workchain.Project;
+import com.mobilalk.workchain.ProjectActivity;
 import com.mobilalk.workchain.R;
 
 public class MenuHelper {
@@ -40,7 +40,7 @@ public class MenuHelper {
             return true;
         }
         else if (itemId == R.id.home) {
-            context.startActivity(new Intent(context, Project.class));
+            context.startActivity(new Intent(context, ProjectActivity.class));
             ((AppCompatActivity)context).finish();
             return true;
         }
