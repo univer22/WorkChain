@@ -1,10 +1,12 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,7 +30,7 @@ import com.mobilalk.workchain.models.Project;
 
 public class ProjectActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth = FirebaseAuth.getInstance();
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     private LinearLayout mainLayout;
     private FirebaseFirestore firestore;
     private CollectionReference projects;
@@ -62,7 +65,8 @@ public class ProjectActivity extends AppCompatActivity {
         if (!newProjectId.isEmpty()) {
             projects.document(newProjectId).get().addOnSuccessListener(documentSnapshot -> {
                 Project project = documentSnapshot.toObject(Project.class);
-                addCard(project.getName() + " " + project.getDescription());
+                project.setId(documentSnapshot.getId());
+                addCard(project);
                 sharedPreferences.deleteItem("newProjectId");
             });
         }
@@ -74,7 +78,8 @@ public class ProjectActivity extends AppCompatActivity {
         projects.whereEqualTo("userID", auth.getUid()).get().addOnSuccessListener(queryDocumentSnapshots -> {
            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                Project project = document.toObject(Project.class);
-               addCard(project.getName() + " " + project.getDescription());
+               project.setId(document.getId());
+               addCard(project);
            }
         });
     }
@@ -93,7 +98,7 @@ public class ProjectActivity extends AppCompatActivity {
         return MenuHelper.onOptionsItemSelected(item, this);
     }
 
-    private void addCard(String text) {
+    private void addCard(Project project) {
         CardView cardView = new CardView(this);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -107,12 +112,32 @@ public class ProjectActivity extends AppCompatActivity {
         cardView.setCardElevation(4f);
         cardView.setPadding(16, 16, 16, 16);
 
+        LinearLayout contentLayout = new LinearLayout(this);
+        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        contentLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
         TextView textView = new TextView(this);
-        textView.setText(text);
+        textView.setText(project.getName());
         textView.setTextSize(18f);
         textView.setPadding(16, 16, 16, 16);
+        contentLayout.addView(textView);
 
-        cardView.addView(textView);
+        Button button = new Button(this);
+        button.setText(getString(R.string.open));
+        button.setPadding(16, 16, 16, 16);
+        button.setAllCaps(false);
+        button.setTextColor(Color.WHITE);
+        button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+        button.setOnClickListener(v -> {
+            sharedPreferences.addItem("openedProjectID", project.getId());
+            startActivity(new Intent(this, ProjectDetails.class));
+            finish();
+        });
+        contentLayout.addView(button);
+        cardView.addView(contentLayout);
         mainLayout.addView(cardView);
     }
 }

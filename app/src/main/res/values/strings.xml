@@ -17,4 +17,6 @@
     <string name="description">Leírás</string>
     <string name="create">Létrehozás</string>
     <string name="home">Kezdőoldal</string>
+    <string name="newTask">Új feladat létrehozása</string>
+    <string name="open">Megnyitás</string>
 </resources>

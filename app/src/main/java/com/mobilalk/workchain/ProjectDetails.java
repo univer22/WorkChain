@@ -1,0 +1,123 @@
+package com.mobilalk.workchain;
+
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
+import com.mobilalk.workchain.models.Project;
+
+public class ProjectDetails extends AppCompatActivity {
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    private SharedPreferencesHelper sharedPreferences;
+    private LinearLayout mainLayout;
+    private Project project;
+
+    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();;
+    private CollectionReference projects = firestore.collection("projects");;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (auth.getCurrentUser() == null) {
+            finish();
+        }
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_project_details);
+        MenuHelper.setToolbar(this);
+        sharedPreferences = new SharedPreferencesHelper(this);
+        mainLayout = findViewById(R.id.main);
+        project = loadProject();
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return MenuHelper.onCreateOptionsMenu(menu, getMenuInflater());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return MenuHelper.onOptionsItemSelected(item, this);
+    }
+
+    private void addHeaderAndButton(Project project) {
+        TextView titleText = new TextView(this);
+        titleText.setId(View.generateViewId());
+        titleText.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        titleText.setEms(10);
+        titleText.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        titleText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        titleText.setTextSize(34f);
+        titleText.setText(project.getName());
+
+        TextView descriptionText = new TextView(this);
+        descriptionText.setId(View.generateViewId());
+        descriptionText.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        descriptionText.setTypeface(Typeface.MONOSPACE);
+        descriptionText.setTextSize(24f);
+        descriptionText.setPadding(16, 16, 16, 16);
+        descriptionText.setText(project.getDescription());
+
+        Button newTask = new Button(this);
+        newTask.setId(View.generateViewId());
+        LinearLayout.LayoutParams newTaskParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        newTaskParams.topMargin = 30;
+        newTaskParams.gravity = Gravity.CENTER_HORIZONTAL;
+        newTask.setLayoutParams(newTaskParams);
+        newTask.setText(getString(R.string.newProject));
+        newTask.setTextSize(24f);
+        newTask.setAllCaps(false);
+        newTask.setTextColor(Color.WHITE);
+        newTask.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+
+        newTask.setOnClickListener(v -> {});
+
+        mainLayout.addView(titleText);
+        mainLayout.addView(descriptionText);
+        mainLayout.addView(newTask);
+    }
+
+    private Project loadProject() {
+        projects.document(sharedPreferences.getItem("openedProjectID", "")).get().addOnSuccessListener(documentSnapshot -> {
+            Project project = documentSnapshot.toObject(Project.class);
+            project.setId(documentSnapshot.getId());
+            sharedPreferences.deleteItem("openedProjectID");
+            addHeaderAndButton(project);
+        });
+        return project;
+    }
+}
