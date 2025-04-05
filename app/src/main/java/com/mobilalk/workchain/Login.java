@@ -40,6 +40,9 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setEditTexts();
         auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(this, ProjectActivity.class));
+        }
         sharedPreferences = new SharedPreferencesHelper(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

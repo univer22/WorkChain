@@ -47,6 +47,9 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         setEditTexts();
         auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(this, ProjectActivity.class));
+        }
         sharedPreferences = new SharedPreferencesHelper(this);
         firestore = FirebaseFirestore.getInstance();
         users = firestore.collection("users");
