@@ -1,5 +1,6 @@
 package com.mobilalk.workchain;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -98,13 +99,15 @@ public class ProjectDetails extends AppCompatActivity {
         newTaskParams.topMargin = 30;
         newTaskParams.gravity = Gravity.CENTER_HORIZONTAL;
         newTask.setLayoutParams(newTaskParams);
-        newTask.setText(getString(R.string.newProject));
+        newTask.setText(getString(R.string.newTask));
         newTask.setTextSize(24f);
         newTask.setAllCaps(false);
         newTask.setTextColor(Color.WHITE);
         newTask.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
 
-        newTask.setOnClickListener(v -> {});
+        newTask.setOnClickListener(v -> {
+            startActivity(new Intent(this, AddTask.class));
+        });
 
         mainLayout.addView(titleText);
         mainLayout.addView(descriptionText);
@@ -115,7 +118,6 @@ public class ProjectDetails extends AppCompatActivity {
         projects.document(sharedPreferences.getItem("openedProjectID", "")).get().addOnSuccessListener(documentSnapshot -> {
             Project project = documentSnapshot.toObject(Project.class);
             project.setId(documentSnapshot.getId());
-            sharedPreferences.deleteItem("openedProjectID");
             addHeaderAndButton(project);
         });
         return project;

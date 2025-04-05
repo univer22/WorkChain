@@ -19,4 +19,10 @@
     <string name="home">Kezdőoldal</string>
     <string name="newTask">Új feladat létrehozása</string>
     <string name="open">Megnyitás</string>
+    <string name="createTask">Új feladat</string>
+    <string name="dueDate">Határidő</string>
+    <string name="low">Alacsony</string>
+    <string name="medium">Közepes</string>
+    <string name="high">Magas</string>
+    <string name="priority">Prioritás</string>
 </resources>

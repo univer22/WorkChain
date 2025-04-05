@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".AddTask">
+
+
+        <TextView
+            android:id="@+id/editTextText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="monospace"
+            android:text="@string/createTask"
+            android:textAlignment="center"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="10dp"
+            android:importantForAutofill="no"
+            android:ems="10"
+            android:hint="@string/name"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/edittext"
+            android:paddingStart="10dp" />
+
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="10dp"
+            android:importantForAutofill="no"
+            android:ems="10"
+            android:hint="@string/dueDate"
+            android:inputType="date"
+            android:background="@drawable/edittext"
+            android:paddingStart="10dp" />
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="10dp"
+            android:importantForAutofill="no"
+            android:ems="10"
+            android:hint="@string/description"
+            android:inputType="text"
+            android:background="@drawable/edittext"
+            android:paddingStart="10dp" />
+
+        <TextView
+            android:id="@+id/priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="monospace"
+            android:text="@string/priority"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"/>
+
+        <RadioGroup
+            android:id="@+id/priorityGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/low"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/low" />
+
+            <RadioButton
+                android:id="@+id/medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/medium" />
+
+            <RadioButton
+                android:id="@+id/high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/high" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/blue"
+            android:onClick="createTask"
+            android:text="@string/create"
+            android:textSize="24sp"
+            app:icon="@drawable/add" />
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="@color/blue"
+            android:onClick="back"
+            android:text="@string/back"
+            android:textSize="24sp"
+            app:icon="@drawable/back" />
+    </LinearLayout>
+</ScrollView>
