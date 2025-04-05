@@ -25,4 +25,6 @@
     <string name="medium">Közepes</string>
     <string name="high">Magas</string>
     <string name="priority">Prioritás</string>
+    <string name="delete">Törlés</string>
+    <string name="edit">Szerkesztés</string>
 </resources>

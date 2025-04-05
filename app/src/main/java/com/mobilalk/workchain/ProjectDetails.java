@@ -36,7 +36,7 @@ public class ProjectDetails extends AppCompatActivity {
     private LinearLayout mainLayout;
     private Project project;
 
-    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();;
+    private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference projects = firestore.collection("projects");
     private CollectionReference tasks = firestore.collection("tasks");
 
@@ -80,12 +80,18 @@ public class ProjectDetails extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : documentSnapshot) {
                             if  (document.getId().equals(newTaskId)) {
                                 Task task = document.toObject(Task.class);
+                                task.setId(document.getId());
                                 sharedPreferences.deleteItem("newTaskId");
                                 addCard(task);
                                 break;
                             }
                         }
             });
+        }
+        if (!sharedPreferences.getItem("isDeleted", "").isEmpty()) {
+            removeTaskFromView(sharedPreferences.getItem("openedTaskId", ""));
+            sharedPreferences.deleteItem("openedTaskId");
+            sharedPreferences.deleteItem("isDeleted");
         }
         super.onResume();
     }
@@ -152,6 +158,7 @@ public class ProjectDetails extends AppCompatActivity {
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 Task task = document.toObject(Task.class);
+                task.setId(document.getId());
                 addCard(task);
             }
         });
@@ -170,6 +177,7 @@ public class ProjectDetails extends AppCompatActivity {
         cardView.setLayoutParams(layoutParams);
         cardView.setCardElevation(4f);
         cardView.setPadding(16, 16, 16, 16);
+        cardView.setTag(task.getId());
 
         LinearLayout contentLayout = new LinearLayout(this);
         contentLayout.setOrientation(LinearLayout.VERTICAL);
@@ -191,10 +199,21 @@ public class ProjectDetails extends AppCompatActivity {
         button.setTextColor(Color.WHITE);
         button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
         button.setOnClickListener(v -> {
-
+            sharedPreferences.addItem("openedTaskId", task.getId());
+            startActivity(new Intent(this, TaskDetails.class));
         });
         contentLayout.addView(button);
         cardView.addView(contentLayout);
         mainLayout.addView(cardView);
+    }
+
+    private void removeTaskFromView(String taskId) {
+        for (int i = 0; i < mainLayout.getChildCount(); i++) {
+            View view = mainLayout.getChildAt(i);
+            if (view instanceof CardView && view.getTag() != null && view.getTag().equals(taskId)) {
+                mainLayout.removeViewAt(i);
+                return;
+            }
+        }
     }
 }

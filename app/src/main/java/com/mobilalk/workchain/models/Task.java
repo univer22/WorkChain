@@ -1,6 +1,7 @@
 package com.mobilalk.workchain.models;
 
 public class Task {
+    private String id;
     private String name;
     private String dueDate;
     private String description;
@@ -15,6 +16,14 @@ public class Task {
         this.projectId = projectId;
     }
     public Task() {}
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
