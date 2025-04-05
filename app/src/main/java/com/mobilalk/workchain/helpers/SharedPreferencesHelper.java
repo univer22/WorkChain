@@ -20,7 +20,7 @@ public class SharedPreferencesHelper {
     }
 
     public void deleteItem(String key) {
-        editor.remove("newProjectId");
+        editor.remove(key);
         editor.apply();
     }
 

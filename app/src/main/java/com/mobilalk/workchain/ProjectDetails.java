@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,9 +24,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.mobilalk.workchain.helpers.MenuHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
+import com.mobilalk.workchain.models.Task;
 
 public class ProjectDetails extends AppCompatActivity {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -34,7 +37,8 @@ public class ProjectDetails extends AppCompatActivity {
     private Project project;
 
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();;
-    private CollectionReference projects = firestore.collection("projects");;
+    private CollectionReference projects = firestore.collection("projects");
+    private CollectionReference tasks = firestore.collection("tasks");
 
 
     @Override
@@ -49,6 +53,7 @@ public class ProjectDetails extends AppCompatActivity {
         sharedPreferences = new SharedPreferencesHelper(this);
         mainLayout = findViewById(R.id.main);
         project = loadProject();
+        listTasks();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -64,6 +69,25 @@ public class ProjectDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return MenuHelper.onOptionsItemSelected(item, this);
+    }
+
+    @Override
+    protected void onResume() {
+        String newTaskId = sharedPreferences.getItem("newTaskId", "");
+        if (!newTaskId.isEmpty()) {
+            tasks.whereEqualTo("projectId", sharedPreferences.getItem("openedProjectID", ""))
+                    .get().addOnSuccessListener(documentSnapshot -> {
+                        for (QueryDocumentSnapshot document : documentSnapshot) {
+                            if  (document.getId().equals(newTaskId)) {
+                                Task task = document.toObject(Task.class);
+                                sharedPreferences.deleteItem("newTaskId");
+                                addCard(task);
+                                break;
+                            }
+                        }
+            });
+        }
+        super.onResume();
     }
 
     private void addHeaderAndButton(Project project) {
@@ -121,5 +145,56 @@ public class ProjectDetails extends AppCompatActivity {
             addHeaderAndButton(project);
         });
         return project;
+    }
+
+    private void listTasks() {
+        tasks.whereEqualTo("projectId", sharedPreferences.getItem("openedProjectID", ""))
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                Task task = document.toObject(Task.class);
+                addCard(task);
+            }
+        });
+    }
+
+    private void addCard(Task task) {
+        CardView cardView = new CardView(this);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        layoutParams.setMargins(16, 16, 16, 16);
+
+        cardView.setLayoutParams(layoutParams);
+        cardView.setCardElevation(4f);
+        cardView.setPadding(16, 16, 16, 16);
+
+        LinearLayout contentLayout = new LinearLayout(this);
+        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        contentLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        TextView textView = new TextView(this);
+        textView.setText(task.getName());
+        textView.setTextSize(18f);
+        textView.setPadding(16, 16, 16, 16);
+        contentLayout.addView(textView);
+
+        Button button = new Button(this);
+        button.setText(getString(R.string.open));
+        button.setPadding(16, 16, 16, 16);
+        button.setAllCaps(false);
+        button.setTextColor(Color.WHITE);
+        button.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+        button.setOnClickListener(v -> {
+
+        });
+        contentLayout.addView(button);
+        cardView.addView(contentLayout);
+        mainLayout.addView(cardView);
     }
 }

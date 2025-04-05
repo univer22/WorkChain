@@ -71,7 +71,6 @@ public class ProjectActivity extends AppCompatActivity {
             });
         }
         super.onResume();
-
     }
 
     private void listProjects() {

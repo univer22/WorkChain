@@ -35,7 +35,7 @@
             android:importantForAutofill="no"
             android:ems="10"
             android:hint="@string/name"
-            android:inputType="textEmailAddress"
+            android:inputType="text"
             android:background="@drawable/edittext"
             android:paddingStart="10dp" />
 
