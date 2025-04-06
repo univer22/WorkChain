@@ -22,6 +22,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Task;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class AddTask extends AppCompatActivity {
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -133,9 +137,27 @@ public class AddTask extends AppCompatActivity {
             Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
             return false;
         }
+
+        if (!isValidDate(date)) {
+            Toast.makeText(this, "Hibás dátumformátum! (éééé-hh-nn)", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         selectedPriorityButton = findViewById(selectedPriorityId);
         priority = selectedPriorityButton.getText().toString();
         return true;
+    }
+
+    private boolean isValidDate(String date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        simpleDateFormat.setLenient(false);
+
+        try {
+            simpleDateFormat.parse(date);
+            return true;
+        } catch (ParseException exception) {
+            return false;
+        }
     }
 
     private void setEditTexts() {
@@ -166,7 +188,7 @@ public class AddTask extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.length() > 0) {
+                if (isValidDate(editable.toString())) {
                     dateEditText.setBackgroundResource(R.drawable.editttext_filled);
                 } else {
                     dateEditText.setBackgroundResource(R.drawable.edittext);
