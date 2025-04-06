@@ -1,8 +1,11 @@
 package com.mobilalk.workchain;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +38,7 @@ public class ProjectActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private CollectionReference projects;
     private SharedPreferencesHelper sharedPreferences;
+    private AlarmManager alarmManager;
 
 
     @Override
@@ -51,7 +55,8 @@ public class ProjectActivity extends AppCompatActivity {
         listProjects();
         sharedPreferences = new SharedPreferencesHelper(this);
         mainLayout = findViewById(R.id.main);
-
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        setAlarmManager();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -95,6 +100,19 @@ public class ProjectActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return MenuHelper.onOptionsItemSelected(item, this);
+    }
+
+    private void setAlarmManager() {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long repeateMillis = AlarmManager.INTERVAL_DAY;
+        long triggerAtMillis = SystemClock.elapsedRealtime();
+        alarmManager.setInexactRepeating(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                triggerAtMillis,
+                repeateMillis,
+                pendingIntent
+        );
     }
 
     private void addCard(Project project) {

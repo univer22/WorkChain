@@ -36,6 +36,7 @@ public class MenuHelper {
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(context, "Sikeres kijelentkezés", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, MainActivity.class));
+            new NotificationHelper(context).send("Amíg nem jelentkezel be nem kapsz értesítést a határidőkről. ");
             ((AppCompatActivity)context).finish();
             return true;
         }
