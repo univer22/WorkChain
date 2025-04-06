@@ -1,5 +1,6 @@
 package com.mobilalk.workchain;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Task;
 
 public class TaskDetails extends AppCompatActivity {
-    private LinearLayout mainLayout;
+    private LinearLayout taskLayout;
     private Task task;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private CollectionReference tasks = firestore.collection("tasks");
@@ -41,15 +42,21 @@ public class TaskDetails extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             finish();
         }
-        mainLayout = findViewById(R.id.main);
+        taskLayout = findViewById(R.id.taskContent);
         MenuHelper.setToolbar(this);
         sharedPreferences = new SharedPreferencesHelper(this);
-        task = loadTask();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        taskLayout.removeAllViews();
+        task = loadTask();
     }
 
     @Override
@@ -159,14 +166,35 @@ public class TaskDetails extends AppCompatActivity {
         editTask.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
 
         editTask.setOnClickListener(v -> {
-
+            sharedPreferences.addItem("editTaskId", task.getId());
+            startActivity(new Intent(this, AddTask.class));
         });
 
-        mainLayout.addView(titleText);
-        mainLayout.addView(descriptionText);
-        mainLayout.addView(dateText);
-        mainLayout.addView(priorityText);
-        mainLayout.addView(deleteTask);
-        mainLayout.addView(editTask);
+        Button back = new Button(this);
+        back.setId(View.generateViewId());
+        LinearLayout.LayoutParams backParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        backParams.topMargin = 30;
+        backParams.gravity = Gravity.CENTER_HORIZONTAL;
+        back.setLayoutParams(backParams);
+        back.setText(getString(R.string.back));
+        back.setTextSize(24f);
+        back.setAllCaps(false);
+        back.setTextColor(Color.WHITE);
+        back.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
+
+        back.setOnClickListener(v -> {
+            finish();
+        });
+
+        taskLayout.addView(titleText);
+        taskLayout.addView(descriptionText);
+        taskLayout.addView(dateText);
+        taskLayout.addView(priorityText);
+        taskLayout.addView(deleteTask);
+        taskLayout.addView(editTask);
+        taskLayout.addView(back);
     }
 }

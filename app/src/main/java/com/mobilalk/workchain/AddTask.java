@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -33,6 +34,13 @@ public class AddTask extends AppCompatActivity {
     private EditText descriptionEditText;
     private RadioGroup priorityGroup;
 
+    private String name;
+    private String date;
+    private String description;
+    private int selectedPriorityId;
+    private RadioButton selectedPriorityButton;
+    private String priority;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,29 +59,83 @@ public class AddTask extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        if (!sharedPreferences.getItem("editTaskId", "").isEmpty()) {
+            Button addTaskButton = findViewById(R.id.addTask);
+            addTaskButton.setText(R.string.save);
+            addTaskButton.setOnClickListener(view -> saveEditedTask());
+            tasks.document(sharedPreferences.getItem("editTaskId", "")).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        Task task = documentSnapshot.toObject(Task.class);
+                        task.setId(documentSnapshot.getId());
+                        nameEditText.setText(task.getName());
+                        dateEditText.setText(task.getDueDate());
+                        descriptionEditText.setText(task.getDescription());
+                        String priority = task.getPriority();
+                        int priorityId = getPriorityRadioButtonId(priority);
+                        RadioButton priorityRadioButton = findViewById(priorityId);
+                        priorityRadioButton.setChecked(true);
+                    });
+        }
+        super.onResume();
+    }
+
     public void back(View view) {
+        sharedPreferences.deleteItem("editTaskId");
         finish();
     }
 
     public void createTask(View view) {
-        String name = nameEditText.getText().toString().trim();
-        String date = dateEditText.getText().toString().trim();
-        String description = descriptionEditText.getText().toString().trim();
-
-        int selectedPriorityId = priorityGroup.getCheckedRadioButtonId();
-        if (name.isEmpty() || date.isEmpty() || description.isEmpty() || selectedPriorityId == -1) {
-            Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
+        if (!setInputTextValues()) {
             return;
         }
-        RadioButton selectedPriorityButton = findViewById(selectedPriorityId);
-        String priority = selectedPriorityButton.getText().toString();
-
         tasks.add(new Task(name, date, description, priority, sharedPreferences.getItem("openedProjectID", "")))
                 .addOnSuccessListener(documentReference -> {
             sharedPreferences.addItem("newTaskId", documentReference.getId());
             finish();
         });
 
+    }
+
+    private int getPriorityRadioButtonId(String priority) {
+        switch (priority) {
+            case "Magas":
+                return R.id.high;
+            case "Közepes":
+                return R.id.medium;
+            case "Alacsony":
+                return R.id.low;
+        }
+        return -1;
+    }
+
+    private void saveEditedTask() {
+        if (!setInputTextValues()) {
+            return;
+        }
+        tasks.document(sharedPreferences.getItem("editTaskId", ""))
+                .set(new Task(name, date, description, priority, sharedPreferences.getItem("openedProjectID", "")))
+                .addOnSuccessListener(v -> {
+                    sharedPreferences.deleteItem("editTaskId");
+                    Toast.makeText(this, "Sikeres módosítás!", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
+    private boolean setInputTextValues() {
+        name = nameEditText.getText().toString().trim();
+        date = dateEditText.getText().toString().trim();
+        description = descriptionEditText.getText().toString().trim();
+
+        selectedPriorityId = priorityGroup.getCheckedRadioButtonId();
+        if (name.isEmpty() || date.isEmpty() || description.isEmpty() || selectedPriorityId == -1) {
+            Toast.makeText(this, "Minden mezőt ki kell tölteni!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        selectedPriorityButton = findViewById(selectedPriorityId);
+        priority = selectedPriorityButton.getText().toString();
+        return true;
     }
 
     private void setEditTexts() {

@@ -19,5 +19,12 @@
             android:background="@color/blue"
             android:minHeight="?attr/actionBarSize" />
 
+        <LinearLayout
+            android:id="@+id/taskContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            />
+
     </LinearLayout>
 </ScrollView>

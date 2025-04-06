@@ -27,4 +27,5 @@
     <string name="priority">Prioritás</string>
     <string name="delete">Törlés</string>
     <string name="edit">Szerkesztés</string>
+    <string name="save">Mentés</string>
 </resources>
