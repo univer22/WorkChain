@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.MenuHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
@@ -205,6 +206,8 @@ public class ProjectDetails extends AppCompatActivity {
         contentLayout.addView(button);
         cardView.addView(contentLayout);
         mainLayout.addView(cardView);
+        cardView.setVisibility(View.INVISIBLE);
+        AnimationHelper.delayAnimation(cardView, 150 * mainLayout.getChildCount() - 1, this, R.anim.projects_and_tasks);
     }
 
     private void removeTaskFromView(String taskId) {

@@ -142,8 +142,8 @@ public class Login extends AppCompatActivity {
         Animation slideInLeft = AnimationUtils.loadAnimation(this, R.anim.input_animation);
         emailEditText.setVisibility(View.VISIBLE);
         emailEditText.startAnimation(slideInLeft);
-        AnimationHelper.delayAnimation(passwordEditText, 250, this);
-        AnimationHelper.delayAnimation(login, 500, this);
-        AnimationHelper.delayAnimation(back, 750, this);
+        AnimationHelper.delayAnimation(passwordEditText, 250, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(login, 500, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(back, 750, this, R.anim.input_animation);
     }
 }

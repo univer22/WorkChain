@@ -219,10 +219,10 @@ public class Register extends AppCompatActivity {
         Animation slideInLeft = AnimationUtils.loadAnimation(this, R.anim.input_animation);
         emailEditText.setVisibility(View.VISIBLE);
         emailEditText.startAnimation(slideInLeft);
-        AnimationHelper.delayAnimation(nameEditText, 250, this);
-        AnimationHelper.delayAnimation(passwordEditText, 500, this);
-        AnimationHelper.delayAnimation(passwordCheckEditText, 750, this);
-        AnimationHelper.delayAnimation(register, 1000, this);
-        AnimationHelper.delayAnimation(back, 1250, this);
+        AnimationHelper.delayAnimation(nameEditText, 250, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(passwordEditText, 500, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(passwordCheckEditText, 750, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(register, 1000, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(back, 1250, this, R.anim.input_animation);
     }
 }
