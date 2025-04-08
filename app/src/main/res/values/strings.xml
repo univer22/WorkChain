@@ -28,4 +28,6 @@
     <string name="delete">Törlés</string>
     <string name="edit">Szerkesztés</string>
     <string name="save">Mentés</string>
+    <string name="openCamera">Profilkép készítése</string>
+    <string name="uploadPhoto">Profilkép választása</string>
 </resources>

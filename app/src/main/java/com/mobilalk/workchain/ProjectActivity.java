@@ -27,6 +27,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.PermissionHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
 
@@ -55,6 +56,7 @@ public class ProjectActivity extends AppCompatActivity {
         listProjects();
         sharedPreferences = new SharedPreferencesHelper(this);
         mainLayout = findViewById(R.id.main);
+         new PermissionHelper().notificationPermisson(this, this);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         setAlarmManager();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

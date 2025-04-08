@@ -1,13 +1,18 @@
 package com.mobilalk.workchain.models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String email;
     private String name;
+    private String photoUrl;
 
     public User(String email, String name) {
         this.email = email;
         this.name = name;
     }
+
+    public User(){}
 
     public String getEmail() {
         return email;
@@ -23,5 +28,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }
