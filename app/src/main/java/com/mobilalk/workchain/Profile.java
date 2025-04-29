@@ -31,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 import com.mobilalk.workchain.helpers.PermissionHelper;
 import com.mobilalk.workchain.models.User;
 
@@ -56,6 +57,10 @@ public class Profile extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
         if (auth.getCurrentUser() == null) {
+            finish();
+        }
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
             finish();
         }
         new PermissionHelper().storageAndCameraPermission(this, this);
@@ -129,6 +134,11 @@ public class Profile extends AppCompatActivity {
 
 
     private void saveImageAndUpdateProfile(Bitmap image) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         String filename = "profile_" + System.currentTimeMillis() + ".jpg";
         File file = new File(getFilesDir(), filename);
         try (FileOutputStream out = new FileOutputStream(file)) {
@@ -150,6 +160,11 @@ public class Profile extends AppCompatActivity {
     }
 
     private void setProfileImageIfAvaliable() {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         ImageView profileImage = findViewById(R.id.profilePhoto);
         if (user.getPhotoUrl() != null) {
             profileImage.setImageBitmap(BitmapFactory.decodeFile(user.getPhotoUrl()));
@@ -213,6 +228,11 @@ public class Profile extends AppCompatActivity {
     }
 
     private void loadUser(Consumer<User> callback) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         users.whereEqualTo("email", auth.getCurrentUser().getEmail()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     User loadedUser = documentSnapshot.getDocuments().get(0).toObject(User.class);

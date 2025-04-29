@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
 import com.mobilalk.workchain.models.Task;
@@ -137,6 +139,11 @@ public class ProjectDetails extends AppCompatActivity {
         newTask.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
 
         newTask.setOnClickListener(v -> {
+            if (!NetworkHelper.isNetworkAvailable(this)) {
+                Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
             startActivity(new Intent(this, AddTask.class));
         });
 

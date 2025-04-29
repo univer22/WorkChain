@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Task;
 
@@ -65,6 +66,11 @@ public class AddTask extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         if (!sharedPreferences.getItem("editTaskId", "").isEmpty()) {
             Button addTaskButton = findViewById(R.id.addTask);
             addTaskButton.setText(R.string.save);
@@ -91,6 +97,11 @@ public class AddTask extends AppCompatActivity {
     }
 
     public void createTask(View view) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         if (!setInputTextValues()) {
             return;
         }
@@ -115,6 +126,11 @@ public class AddTask extends AppCompatActivity {
     }
 
     private void saveEditedTask() {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         if (!setInputTextValues()) {
             return;
         }

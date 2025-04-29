@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Task;
 
@@ -70,6 +72,10 @@ public class TaskDetails extends AppCompatActivity {
     }
 
     private Task loadTask() {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
         tasks.document(sharedPreferences.getItem("openedTaskId", "")).get()
                 .addOnSuccessListener(documentSnapshot -> {
             Task task = documentSnapshot.toObject(Task.class);
@@ -80,6 +86,11 @@ public class TaskDetails extends AppCompatActivity {
     }
 
     private void createContent(Task task) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         TextView titleText = new TextView(this);
         titleText.setId(View.generateViewId());
         titleText.setLayoutParams(new LinearLayout.LayoutParams(
@@ -144,6 +155,11 @@ public class TaskDetails extends AppCompatActivity {
         deleteTask.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
 
         deleteTask.setOnClickListener(v -> {
+            if (!NetworkHelper.isNetworkAvailable(this)) {
+                Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
             tasks.document(task.getId()).delete().addOnSuccessListener(deletedSuccessful -> {
                 sharedPreferences.addItem("isDeleted", "true");
                 finish();
@@ -166,6 +182,11 @@ public class TaskDetails extends AppCompatActivity {
         editTask.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.blue));
 
         editTask.setOnClickListener(v -> {
+            if (!NetworkHelper.isNetworkAvailable(this)) {
+                Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
             sharedPreferences.addItem("editTaskId", task.getId());
             startActivity(new Intent(this, AddTask.class));
         });

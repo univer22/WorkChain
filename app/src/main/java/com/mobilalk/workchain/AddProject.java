@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.MenuHelper;
+import com.mobilalk.workchain.helpers.NetworkHelper;
 import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 import com.mobilalk.workchain.models.Project;
 
@@ -66,6 +67,11 @@ public class AddProject extends AppCompatActivity {
     }
 
     public void create(View view) {
+        if (!NetworkHelper.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Nincs internetkapcsolat!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         String name = projectNameEditText.getText().toString().trim();
         String description = descriptionEdittext.getText().toString().trim();
         if (name.isEmpty() || description.isEmpty()) {
