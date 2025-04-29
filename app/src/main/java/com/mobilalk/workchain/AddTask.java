@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -72,6 +73,8 @@ public class AddTask extends AppCompatActivity {
             return;
         }
         if (!sharedPreferences.getItem("editTaskId", "").isEmpty()) {
+            TextView mainText = findViewById(R.id.mainText);
+            mainText.setText(getString(R.string.edit));
             Button addTaskButton = findViewById(R.id.addTask);
             addTaskButton.setText(R.string.save);
             addTaskButton.setOnClickListener(view -> saveEditedTask());
