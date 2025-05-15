@@ -17,4 +17,17 @@
     <string name="description">Leírás</string>
     <string name="create">Létrehozás</string>
     <string name="home">Kezdőoldal</string>
+    <string name="newTask">Új feladat létrehozása</string>
+    <string name="open">Megnyitás</string>
+    <string name="createTask">Új feladat</string>
+    <string name="dueDate">Határidő: éééé-hh-nn</string>
+    <string name="low">Alacsony</string>
+    <string name="medium">Közepes</string>
+    <string name="high">Magas</string>
+    <string name="priority">Prioritás</string>
+    <string name="delete">Törlés</string>
+    <string name="edit">Szerkesztés</string>
+    <string name="save">Mentés</string>
+    <string name="openCamera">Profilkép készítése</string>
+    <string name="uploadPhoto">Profilkép választása</string>
 </resources>

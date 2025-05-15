@@ -13,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mobilalk.workchain.MainActivity;
-import com.mobilalk.workchain.Project;
+import com.mobilalk.workchain.Profile;
+import com.mobilalk.workchain.ProjectActivity;
 import com.mobilalk.workchain.R;
 
 public class MenuHelper {
@@ -36,11 +37,18 @@ public class MenuHelper {
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(context, "Sikeres kijelentkezés", Toast.LENGTH_SHORT).show();
             context.startActivity(new Intent(context, MainActivity.class));
+            new NotificationHelper(context).send("Amíg nem jelentkezel be nem kapsz értesítést a határidőkről. ");
             ((AppCompatActivity)context).finish();
             return true;
         }
         else if (itemId == R.id.home) {
-            context.startActivity(new Intent(context, Project.class));
+            context.startActivity(new Intent(context, ProjectActivity.class));
+            ((AppCompatActivity)context).finish();
+            return true;
+        }
+
+        else if (itemId == R.id.profile) {
+            context.startActivity(new Intent(context, Profile.class));
             ((AppCompatActivity)context).finish();
             return true;
         }

@@ -1,7 +1,6 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,13 +24,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.NetworkHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
 
 public class Login extends AppCompatActivity {
 
     private EditText emailEditText;
     private EditText passwordEditText;
     private FirebaseAuth auth;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferencesHelper sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,10 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         setEditTexts();
         auth = FirebaseAuth.getInstance();
-        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(this, ProjectActivity.class));
+        }
+        sharedPreferences = new SharedPreferencesHelper(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -79,13 +82,11 @@ public class Login extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    startActivity(new Intent(Login.this, Project.class));
+                    startActivity(new Intent(Login.this, ProjectActivity.class));
                 } else {
                     Toast.makeText(Login.this, "Sikertelen bejelenetkezés!", Toast.LENGTH_SHORT).show();
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("email", email);
-                    editor.putString("password", password);
-                    editor.apply();
+                    sharedPreferences.addItem("email", email);
+                    sharedPreferences.addItem("password", password);
                     startActivity(new Intent(Login.this, Register.class));
                 }
             }
@@ -141,8 +142,8 @@ public class Login extends AppCompatActivity {
         Animation slideInLeft = AnimationUtils.loadAnimation(this, R.anim.input_animation);
         emailEditText.setVisibility(View.VISIBLE);
         emailEditText.startAnimation(slideInLeft);
-        AnimationHelper.delayAnimation(passwordEditText, 250, this);
-        AnimationHelper.delayAnimation(login, 500, this);
-        AnimationHelper.delayAnimation(back, 750, this);
+        AnimationHelper.delayAnimation(passwordEditText, 250, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(login, 500, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(back, 750, this, R.anim.input_animation);
     }
 }

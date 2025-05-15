@@ -1,7 +1,6 @@
 package com.mobilalk.workchain;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,8 +24,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobilalk.workchain.helpers.AnimationHelper;
 import com.mobilalk.workchain.helpers.NetworkHelper;
+import com.mobilalk.workchain.helpers.SharedPreferencesHelper;
+import com.mobilalk.workchain.models.User;
 
 public class Register extends AppCompatActivity {
     private EditText emailEditText;
@@ -34,8 +37,9 @@ public class Register extends AppCompatActivity {
     private EditText passwordEditText;
     private EditText passwordCheckEditText;
     private FirebaseAuth auth;
-    private SharedPreferences sharedPreferences;
-
+    private SharedPreferencesHelper sharedPreferences;
+    private FirebaseFirestore firestore;
+    private CollectionReference users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +47,12 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         setEditTexts();
         auth = FirebaseAuth.getInstance();
-        sharedPreferences = getSharedPreferences("WorkChainPrefs", MODE_PRIVATE);
+        if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(this, ProjectActivity.class));
+        }
+        sharedPreferences = new SharedPreferencesHelper(this);
+        firestore = FirebaseFirestore.getInstance();
+        users = firestore.collection("users");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -60,17 +69,15 @@ public class Register extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        String savedEmail = sharedPreferences.getString("email", "");
-        String savedPassword = sharedPreferences.getString("password", "");
+        String savedEmail = sharedPreferences.getItem("email", "");
+        String savedPassword = sharedPreferences.getItem("password", "");
 
         if (!savedEmail.isEmpty() && !savedPassword.isEmpty()) {
             emailEditText.setText(savedEmail);
             passwordEditText.setText(savedPassword);
         }
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+       sharedPreferences.clear();
         super.onResume();
     }
 
@@ -109,8 +116,9 @@ public class Register extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    users.add(new User(email, name));
                     Toast.makeText(Register.this, "Sikeres regisztráció!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Register.this, Project.class));
+                    startActivity(new Intent(Register.this, ProjectActivity.class));
                 } else {
                     Exception exception = task.getException();
                     if (exception instanceof FirebaseAuthInvalidCredentialsException) {
@@ -211,10 +219,10 @@ public class Register extends AppCompatActivity {
         Animation slideInLeft = AnimationUtils.loadAnimation(this, R.anim.input_animation);
         emailEditText.setVisibility(View.VISIBLE);
         emailEditText.startAnimation(slideInLeft);
-        AnimationHelper.delayAnimation(nameEditText, 250, this);
-        AnimationHelper.delayAnimation(passwordEditText, 500, this);
-        AnimationHelper.delayAnimation(passwordCheckEditText, 750, this);
-        AnimationHelper.delayAnimation(register, 1000, this);
-        AnimationHelper.delayAnimation(back, 1250, this);
+        AnimationHelper.delayAnimation(nameEditText, 250, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(passwordEditText, 500, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(passwordCheckEditText, 750, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(register, 1000, this, R.anim.input_animation);
+        AnimationHelper.delayAnimation(back, 1250, this, R.anim.input_animation);
     }
 }
