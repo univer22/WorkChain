@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "226398961850",
+    "project_id": "workchain-e9a50",
+    "storage_bucket": "workchain-e9a50.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226398961850:android:631f051f61d8bbb48ec283",
+        "android_client_info": {
+          "package_name": "com.mobilalk.workchain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBBFEUQJvvF21LYQpK2_YqIOO7dv9E7AA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
